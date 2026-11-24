@@ -1,0 +1,55 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+
+  // PLUGINS (2). OpenCode v2 usa la clave "plugins" (en plural).
+  // - opencode-dcp: ahorra tokens podando y resumiendo contexto antiguo (se configura en .opencode/dcp.jsonc).
+  // - envsitter-guard: impide que el agente lea o edite archivos .env y oculta valores secretos.
+  // "@latest" se actualiza solo cada 24 h. Para la entrega, fija la version exacta que muestre `opencode plugin list`.
+  "plugins": [
+    "@tarquinen/opencode-dcp@latest",
+    "envsitter-guard@latest"
+  ],
+
+  // MCPs (3). En v2 los servidores van dentro de "mcp.servers".
+  // Ninguna credencial se escribe aqui: se leen del entorno con {env:NOMBRE}.
+  "mcp": {
+    "servers": {
+      // Documentacion actualizada de librerias (Angular, ASP.NET Core, EF Core, Tailwind).
+      // La clave de Context7 es opcional (sirve para subir los limites de uso). Aqui se usa sin clave.
+      "context7": {
+        "type": "remote",
+        "url": "https://mcp.context7.com/mcp",
+        "oauth": false
+      },
+
+      // Busqueda de ejemplos reales de codigo en repositorios publicos de GitHub. Sin clave.
+      "grep": {
+        "type": "remote",
+        "url": "https://mcp.grep.app",
+        "oauth": false
+      },
+
+      // PostgreSQL del proyecto. Se ejecuta en un contenedor Docker (imagen crystaldba/postgres-mcp).
+      // --access-mode=restricted: solo transacciones de solo lectura y tiempo de ejecucion limitado.
+      // La cadena de conexion llega por la variable DATABASE_URI (definida en .env, nunca aqui).
+      "postgres": {
+        "type": "local",
+        "command": [
+          "docker", "run", "-i", "--rm",
+          "--add-host=host.docker.internal:host-gateway",
+          "-e", "DATABASE_URI",
+          "crystaldba/postgres-mcp",
+          "--access-mode=restricted"
+        ],
+        "environment": {
+          "DATABASE_URI": "{env:DATABASE_URI}"
+        }
+      }
+    }
+  },
+
+  // Pide confirmacion antes de subir cambios a GitHub.
+  "permissions": [
+    { "action": "shell", "resource": "git push *", "effect": "ask" }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Opencode-DCP/opencode-dynamic-context-pruning/master/dcp.schema.json",
+  // Configuracion del plugin Dynamic Context Pruning (ahorro de tokens)
+  "enabled": true,
+  "pruneNotification": "minimal",
+  "compress": {
+    "mode": "range",
+    "maxContextLimit": 80000,
+    "minContextLimit": 40000
+  },
+  "strategies": {
+    "purgeErrors": { "enabled": true, "turns": 4 }
+  }
+}

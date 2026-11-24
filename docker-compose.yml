@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: zoologic-opencode-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: zoo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?define POSTGRES_PASSWORD en el archivo .env}
+      POSTGRES_DB: zoologic
+    ports:
+      - "5433:5432"
+    volumes:
+      - zoologic-opencode-data:/var/lib/postgresql/data
+
+volumes:
+  zoologic-opencode-data:

@@ -1,0 +1,26 @@
+# Secretos
+.env
+.env.*
+!.env.example
+.envsitter/
+
+# .NET
+bin/
+obj/
+*.user
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+
+# OpenCode (estado local)
+.opencode/node_modules/
+.opencode/package-lock.json
+.opencode/bun.lock
+
+# SO / editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
