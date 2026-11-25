@@ -1,7 +1,7 @@
 ---
 description: Revisa cambios del proyecto (correccion, seguridad, secretos, convenciones, accesibilidad) sin editar archivos. Usalo antes de dar por cerrada una funcionalidad.
 mode: subagent
-model: opencode/deepseek-v4.1-flash-free
+model: google/gemini-3.6-flash
 permissions:
   - action: edit
     resource: "*"

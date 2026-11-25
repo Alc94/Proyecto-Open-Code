@@ -1,0 +1,7 @@
+@ZooLogic.Api_HostAddress = http://localhost:5142
+
+### Estado de la API y de la base de datos
+GET {{ZooLogic.Api_HostAddress}}/health
+Accept: application/json
+
+###

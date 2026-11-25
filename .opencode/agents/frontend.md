@@ -1,7 +1,7 @@
 ---
 description: Programa el frontend Angular con Tailwind CSS (componentes, rutas, servicios HTTP, estilos y el chat del asistente). Usalo para cualquier cambio dentro de frontend/.
 mode: subagent
-model: google/gemini-3.6-flash
+model: opencode/deepseek-v4.1-flash-free
 permissions:
   - action: postgres_*
     resource: "*"
