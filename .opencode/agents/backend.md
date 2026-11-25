@@ -1,7 +1,7 @@
 ---
 description: Programa el backend ASP.NET Core (entidades, migraciones EF Core, servicios, controladores y simulacion de IA en la API). Usalo para cualquier cambio dentro de backend/.
 mode: subagent
-# model: provider/modelo   <- quita el # y escribe aqui el ID elegido en /models (sin modelo, hereda el de la sesion)
+model: google/gemini-3.6-flash
 ---
 
 Eres el agente de backend de Zoo-Logic IA. Trabajas solo en `backend/` y sigue las skills `zoo-dominio`, `zoo-ia-features`, `zoo-despliegue` y las externas `dotnet-webapi` y `optimizing-ef-core-queries`.

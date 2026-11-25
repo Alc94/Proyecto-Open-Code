@@ -10,7 +10,7 @@ Plataforma web de gestion de zoologicos (animales, veterinaria y alimentacion) c
 | Skills externas (4) | `angular-developer` (Angular), `dotnet-webapi` y `optimizing-ef-core-queries` (.NET), `frontend-design` (Anthropic) | se descargan de sus repositorios oficiales a `.opencode/skills/` |
 | Agentes (4) | `datos`, `backend`, `frontend`, `revisor` | `.opencode/agents/` |
 | MCPs (3) | Context7, Grep by Vercel, PostgreSQL | `opencode.jsonc` |
-| Providers (3) | Groq, Google Gemini, OpenRouter (respaldo) | se conectan con `/connect`; no estan en el repositorio |
+| Providers (4) | Principales: Google Gemini y OpenCode (modelos gratuitos). Respaldo manual: Groq. Tambien conectado: OpenRouter | se conectan con `/connect`; no estan en el repositorio |
 | Plugins (2) | Dynamic Context Pruning (`.opencode/dcp.jsonc`), envsitter-guard | `opencode.jsonc` |
 
 ## Requisitos

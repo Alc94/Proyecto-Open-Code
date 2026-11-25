@@ -29,3 +29,5 @@ Propias del proyecto: `zoo-dominio`, `zoo-ia-features`, `zoo-orquestador-modelos
 ## Reparto de trabajo entre modelos
 
 Carga la skill `zoo-orquestador-modelos` antes de tareas grandes. Resumen: `datos` investiga, `backend` programa la API, `frontend` programa Angular, `revisor` revisa. Cada subagente recibe un encargo autocontenido y devuelve un informe corto.
+
+Providers: los principales son Google Gemini y OpenCode (solo modelos gratuitos). Groq es el respaldo y se usa de forma manual: si un modelo falla por limite de uso o indisponibilidad, cambia al siguiente modelo gratuito con `/models` o cambia la linea `model:` del agente. Nunca uses modelos de pago.

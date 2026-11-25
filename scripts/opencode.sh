@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Lanza OpenCode cargando antes las variables de .env, para que el MCP de PostgreSQL
 # vea DATABASE_URI y la API vea ConnectionStrings__Default.
-# Las claves de los providers (Groq, Gemini, OpenRouter) NO van aqui: se guardan con /connect.
+# Las claves de los providers (Gemini, OpenCode, Groq, OpenRouter) NO van aqui: se guardan con /connect.
 # Uso desde la raiz del proyecto, en Git Bash:  bash scripts/opencode.sh
 set -euo pipefail
 cd "$(dirname "$0")/.."

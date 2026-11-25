@@ -1,7 +1,7 @@
 ---
 description: Programa el frontend Angular con Tailwind CSS (componentes, rutas, servicios HTTP, estilos y el chat del asistente). Usalo para cualquier cambio dentro de frontend/.
 mode: subagent
-# model: provider/modelo   <- quita el # y escribe aqui el ID elegido en /models (sin modelo, hereda el de la sesion)
+model: google/gemini-3.6-flash
 permissions:
   - action: postgres_*
     resource: "*"

@@ -1,7 +1,7 @@
 ---
 description: Recopila y resume informacion (documentacion con Context7, ejemplos con Grep, esquema y datos de PostgreSQL) sin modificar archivos. Usalo antes de programar para ahorrar contexto al agente principal.
 mode: subagent
-# model: provider/modelo   <- quita el # y escribe aqui el ID elegido en /models (sin modelo, hereda el de la sesion)
+model: opencode/hy4-flash-free
 permissions:
   - action: edit
     resource: "*"

@@ -50,6 +50,12 @@
 
   // Pide confirmacion antes de subir cambios a GitHub.
   "permissions": [
-    { "action": "shell", "resource": "git push *", "effect": "ask" }
+    { "action": "shell", "resource": "git push *", "effect": "ask" },
+    { "action": "skill", "resource": "*", "effect": "deny" },
+    { "action": "skill", "resource": "zoo-*", "effect": "allow" },
+    { "action": "skill", "resource": "angular-developer", "effect": "allow" },
+    { "action": "skill", "resource": "dotnet-webapi", "effect": "allow" },
+    { "action": "skill", "resource": "optimizing-ef-core-queries", "effect": "allow" },
+    { "action": "skill", "resource": "frontend-design", "effect": "allow" }
   ]
 }

@@ -1,7 +1,7 @@
 ---
 description: Revisa cambios del proyecto (correccion, seguridad, secretos, convenciones, accesibilidad) sin editar archivos. Usalo antes de dar por cerrada una funcionalidad.
 mode: subagent
-# model: provider/modelo   <- quita el # y escribe aqui el ID elegido en /models (sin modelo, hereda el de la sesion)
+model: opencode/deepseek-v4.1-flash-free
 permissions:
   - action: edit
     resource: "*"
