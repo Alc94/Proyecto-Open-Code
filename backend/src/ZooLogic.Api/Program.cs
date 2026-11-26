@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using ZooLogic.Api.Data;
+using ZooLogic.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,17 @@ if (string.IsNullOrWhiteSpace(connectionString))
 
 builder.Services.AddOpenApi();
 builder.Services.AddProblemDetails();
+builder.Services.AddValidation();
+builder.Services.AddExceptionHandler<ApiExceptionHandler>();
+
+// El frontend Angular de desarrollo se sirve desde el puerto 4200.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendDev", policy =>
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
@@ -47,6 +59,11 @@ if (app.Environment.IsDevelopment())
     {
         app.Logger.LogError(ex, "No se pudo preparar la base de datos al arrancar. /health responderá Unhealthy.");
     }
+}
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors("FrontendDev");
 }
 
 app.UseExceptionHandler();
