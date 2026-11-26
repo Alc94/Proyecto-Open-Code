@@ -33,7 +33,7 @@ internal sealed class EspecieService(ZooDbContext db) : IEspecieService
         }
 
         return await consulta
-            .OrderBy(especie => especie.NombreComun)
+            .OrderBy(especie => EF.Functions.Collate(especie.NombreComun, Colaciones.Espanol))
             .ThenBy(especie => especie.Id)
             .Select(especie => new EspecieResponse(
                 especie.Id,

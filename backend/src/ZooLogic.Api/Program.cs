@@ -43,6 +43,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.Services.AddDbContext<ZooDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<IEspecieService, EspecieService>();
+builder.Services.AddScoped<IAnimalService, AnimalService>();
 
 var app = builder.Build();
 
@@ -94,5 +95,6 @@ app.MapGet("/health", async (ZooDbContext db, CancellationToken ct) =>
     .Produces(StatusCodes.Status503ServiceUnavailable);
 
 app.MapEspecies();
+app.MapAnimales();
 
 app.Run();

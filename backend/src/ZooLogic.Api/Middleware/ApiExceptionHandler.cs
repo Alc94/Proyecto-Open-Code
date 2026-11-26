@@ -17,6 +17,24 @@ internal sealed class ApiExceptionHandler(ILogger<ApiExceptionHandler> logger) :
         Exception exception,
         CancellationToken cancellationToken)
     {
+        if (exception is ValidacionException validacion)
+        {
+            logger.LogWarning(exception, "Validación de negocio fallida");
+
+            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await httpContext.Response.WriteAsJsonAsync(
+                new ValidationProblemDetails(validacion.Errores)
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "La petición contiene datos no válidos.",
+                    Detail = "Revisa los campos indicados.",
+                    Instance = httpContext.Request.Path
+                },
+                cancellationToken);
+
+            return true;
+        }
+
         var (statusCode, title, detail) = exception switch
         {
             RecursoNoEncontradoException ex =>
