@@ -51,6 +51,10 @@ builder.Services.AddScoped<IAnimalService, AnimalService>();
 builder.Services.AddScoped<IConsultaService, ConsultaService>();
 builder.Services.AddScoped<ITratamientoService, TratamientoService>();
 builder.Services.AddScoped<IAlertaService, AlertaService>();
+builder.Services.AddScoped<IAlimentoService, AlimentoService>();
+builder.Services.AddScoped<IDietaService, DietaService>();
+builder.Services.AddScoped<IRegistroAlimentacionService, RegistroAlimentacionService>();
+builder.Services.AddScoped<IPanelService, PanelService>();
 
 var app = builder.Build();
 
@@ -106,6 +110,8 @@ app.MapGet("/health", async (ZooDbContext db, CancellationToken ct) =>
 app.MapEspecies();
 app.MapAnimales();
 app.MapVeterinaria();
+app.MapAlimentacion();
+app.MapPanel();
 
 app.Run();
 
