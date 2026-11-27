@@ -5,7 +5,9 @@ FROM node:24-alpine AS frontend
 WORKDIR /src/frontend
 
 COPY frontend/package.json frontend/package-lock.json ./
-RUN npm ci --no-audit --no-fund
+# npm ci exige un lock con las dependencias del sistema destino. El lock se genera
+# en Windows y no incluye las de Linux, asi que aqui se resuelven con npm install.
+RUN npm install --no-audit --no-fund
 
 COPY frontend/ ./
 RUN npm run build
