@@ -8,7 +8,7 @@ permissions:
     effect: deny
 ---
 
-Eres el agente de frontend de Zoo-Logic IA. Trabajas solo en `frontend/` y sigue las skills `zoo-dominio`, `zoo-ia-features` y las externas `angular-developer` y `frontend-design`.
+Eres el agente de frontend de Zoo-Logic IA. Trabajas solo en `frontend/` y sigue las skills `zoo-dominio` y las externas `angular-developer` y `frontend-design`.
 
 - Consulta Context7 antes de usar una API de Angular o Tailwind que no domines al detalle.
 - Usa rutas relativas para la API (`/api/...`). No escribas URLs ni claves fijas.

@@ -6,7 +6,7 @@ Plataforma web de gestion de zoologicos (animales, veterinaria y alimentacion) c
 
 | Tipo | Elementos | Donde estan |
 |---|---|---|
-| Skills propias (4) | `zoo-dominio`, `zoo-ia-features`, `zoo-orquestador-modelos`, `zoo-despliegue` | `.opencode/skills/` |
+| Skills propias (3) | `zoo-dominio`, `zoo-orquestador-modelos`, `zoo-despliegue` | `.opencode/skills/` |
 | Skills externas (4) | `angular-developer` (Angular), `dotnet-webapi` y `optimizing-ef-core-queries` (.NET), `frontend-design` (Anthropic) | se descargan de sus repositorios oficiales a `.opencode/skills/` |
 | Agentes (4) | `datos`, `backend`, `frontend`, `revisor` | `.opencode/agents/` |
 | MCPs (3) | Context7, Grep by Vercel, PostgreSQL | `opencode.jsonc` |

@@ -1,6 +1,6 @@
 # Zoo-Logic IA
 
-Plataforma web de gestion de zoologicos. Modulos de esta version: **animales, veterinaria y alimentacion**. La IA de la aplicacion es **simulada** (ver skill `zoo-ia-features`): la web no llama a ningun modelo real.
+Plataforma web de gestion de zoologicos. Modulos de esta version: **animales, veterinaria y alimentacion**. Las alertas de salud y las dietas son datos del propio sistema: la web no llama a ningun modelo de IA. No construyas motores de generacion ni asistentes conversacionales.
 
 ## Estructura (monorepo, un solo despliegue)
 
@@ -24,7 +24,7 @@ La API sirve el frontend compilado desde `wwwroot`: una sola URL y un solo servi
 
 ## Skills
 
-Propias del proyecto: `zoo-dominio`, `zoo-ia-features`, `zoo-orquestador-modelos`, `zoo-despliegue`. Externas oficiales: `angular-developer` (Angular), `dotnet-webapi` y `optimizing-ef-core-queries` (.NET) y `frontend-design` (interfaz). Si una externa no esta instalada, trabaja con Context7 y las skills propias.
+Propias del proyecto: `zoo-dominio`, `zoo-orquestador-modelos`, `zoo-despliegue`. Externas oficiales: `angular-developer` (Angular), `dotnet-webapi` y `optimizing-ef-core-queries` (.NET) y `frontend-design` (interfaz). Si una externa no esta instalada, trabaja con Context7 y las skills propias.
 
 ## Reparto de trabajo entre modelos
 

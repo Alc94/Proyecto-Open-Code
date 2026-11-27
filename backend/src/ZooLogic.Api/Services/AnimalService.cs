@@ -113,6 +113,8 @@ internal sealed class AnimalService(ZooDbContext db) : IAnimalService
                     .OrderByDescending(consulta => consulta.Fecha)
                     .Select(consulta => new ConsultaResumenResponse(
                         consulta.Id,
+                        consulta.AnimalId,
+                        consulta.Animal.Nombre,
                         consulta.Fecha,
                         consulta.Veterinario,
                         consulta.Motivo,
@@ -196,8 +198,7 @@ internal sealed class AnimalService(ZooDbContext db) : IAnimalService
                 alerta.Mensaje,
                 alerta.Estado,
                 alerta.Origen,
-                alerta.Gravedad == "Alta" || alerta.Gravedad == "Critica",
-                null))
+                alerta.Gravedad == "Alta" || alerta.Gravedad == "Critica"))
             .ToListAsync(cancellationToken);
 
         var alimentacion = await db.RegistrosAlimentacion

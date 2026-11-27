@@ -10,9 +10,8 @@ namespace ZooLogic.Api.Contracts.Alertas;
 /// <param name="Tipo">Tipo de alerta.</param>
 /// <param name="Mensaje">Explicación de la alerta.</param>
 /// <param name="Estado">Estado: Abierta, Revisada o Cerrada.</param>
-/// <param name="Origen">Origen de la alerta; siempre IA simulada.</param>
+/// <param name="Origen">Origen registrado de la alerta.</param>
 /// <param name="Destacada">Indica si debe mostrarse destacada en el panel.</param>
-/// <param name="Confianza">Confianza ficticia de la simulación, si aplica.</param>
 public sealed record AlertaResponse(
     int Id,
     int AnimalId,
@@ -24,5 +23,4 @@ public sealed record AlertaResponse(
     string Mensaje,
     string Estado,
     string Origen,
-    bool Destacada,
-    decimal? Confianza);
+    bool Destacada);

@@ -14,12 +14,16 @@ if (!string.IsNullOrWhiteSpace(port))
     builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 }
 
-// La cadena de conexión de desarrollo llega por ConnectionStrings__Default.
-var connectionString = builder.Configuration.GetConnectionString("Default");
+// En Render la cadena llega como URL en DATABASE_URL; en desarrollo se usa ConnectionStrings__Default.
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+var connectionString = !string.IsNullOrWhiteSpace(databaseUrl)
+    ? ANpgsql(databaseUrl)
+    : builder.Configuration.GetConnectionString("Default");
+
 if (string.IsNullOrWhiteSpace(connectionString))
 {
     throw new InvalidOperationException(
-        "Falta la cadena de conexión de PostgreSQL. Define la variable de entorno ConnectionStrings__Default.");
+        "Falta la cadena de conexión de PostgreSQL. Define DATABASE_URL en Render o ConnectionStrings__Default en desarrollo.");
 }
 
 builder.Services.AddOpenApi();
@@ -44,15 +48,20 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 builder.Services.AddDbContext<ZooDbContext>(options => options.UseNpgsql(connectionString));
 builder.Services.AddScoped<IEspecieService, EspecieService>();
 builder.Services.AddScoped<IAnimalService, AnimalService>();
+builder.Services.AddScoped<IConsultaService, ConsultaService>();
+builder.Services.AddScoped<ITratamientoService, TratamientoService>();
+builder.Services.AddScoped<IAlertaService, AlertaService>();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+}
 
-    // La API arranca aunque la base de datos no esté disponible: /health responderá 503.
-    using var scope = app.Services.CreateScope();
+// Preparar la base de datos también en Render; la API arranca aunque falle y /health responderá 503.
+using (var scope = app.Services.CreateScope())
+{
     try
     {
         var db = scope.ServiceProvider.GetRequiredService<ZooDbContext>();
@@ -96,5 +105,24 @@ app.MapGet("/health", async (ZooDbContext db, CancellationToken ct) =>
 
 app.MapEspecies();
 app.MapAnimales();
+app.MapVeterinaria();
 
 app.Run();
+
+// Render entrega DATABASE_URL como postgresql://usuario:clave@host:puerto/base.
+static string ANpgsql(string url)
+{
+    var uri = new Uri(url);
+    var usuarioClave = uri.UserInfo.Split(':', 2);
+    if (usuarioClave.Length != 2)
+    {
+        throw new InvalidOperationException("DATABASE_URL no incluye usuario y contraseña.");
+    }
+
+    var puerto = uri.Port > 0 ? uri.Port : 5432;
+    var baseDatos = uri.AbsolutePath.TrimStart('/');
+
+    return $"Host={uri.Host};Port={puerto};Database={baseDatos};" +
+           $"Username={Uri.UnescapeDataString(usuarioClave[0])};" +
+           $"Password={Uri.UnescapeDataString(usuarioClave[1])};SSL Mode=Prefer";
+}

@@ -4,7 +4,7 @@ mode: subagent
 model: opencode/deepseek-v4.1-flash-free
 ---
 
-Eres el agente de backend de Zoo-Logic IA. Trabajas solo en `backend/` y sigue las skills `zoo-dominio`, `zoo-ia-features`, `zoo-despliegue` y las externas `dotnet-webapi` y `optimizing-ef-core-queries`.
+Eres el agente de backend de Zoo-Logic IA. Trabajas solo en `backend/` y sigue las skills `zoo-dominio`, `zoo-despliegue` y las externas `dotnet-webapi` y `optimizing-ef-core-queries`.
 
 - Consulta Context7 antes de usar una API de .NET o EF Core que no domines al detalle.
 - Termina siempre ejecutando `dotnet build` y, si hay tests, `dotnet test`.
