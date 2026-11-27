@@ -1,0 +1,139 @@
+<div class="pagina">
+  <header class="flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="text-sm font-medium text-bosque-600 first-letter:uppercase">
+        {{ fechaHoy | date: "EEEE, d 'de' MMMM" }}
+      </p>
+      <h1 class="titulo-pagina mt-1">La ronda de hoy</h1>
+      <p class="subtitulo-pagina">{{ mensajeResumen() }}</p>
+    </div>
+    <button type="button" class="boton-secundario" (click)="actualizar()">
+      <app-icono nombre="reloj" clase="size-4" />
+      Actualizar
+    </button>
+  </header>
+
+  <section class="mt-8" aria-labelledby="titulo-censo">
+    <h2 id="titulo-censo" class="sr-only">Resumen del censo</h2>
+
+    @if (resumen.isLoading()) {
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5" role="status" aria-label="Cargando resumen">
+        @for (hueco of [1, 2, 3, 4, 5]; track hueco) {
+          <app-esqueleto clase="h-28" />
+        }
+      </div>
+    } @else if (resumen.error()) {
+      <app-error-carga [mensaje]="errorResumen()" (reintentar)="resumen.reload()" />
+    } @else if (resumen.hasValue()) {
+      <dl class="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-bosque-200 bg-bosque-200 sm:grid-cols-3 xl:grid-cols-5">
+        @for (tarjeta of tarjetas(); track tarjeta.etiqueta; let ultima = $last) {
+          <div [class]="'bg-arena-50 px-4 py-5 sm:px-5 ' + (ultima ? 'col-span-2 sm:col-span-1' : '')">
+            <dt class="text-xs font-medium text-bosque-600">{{ tarjeta.etiqueta }}</dt>
+            <dd [class]="claseValor(tarjeta.tono)">{{ tarjeta.valor }}</dd>
+            <dd class="mt-1 text-xs text-bosque-600">{{ tarjeta.nota }}</dd>
+          </div>
+        }
+      </dl>
+    }
+  </section>
+
+  <section class="mt-10" aria-labelledby="titulo-alertas">
+    <div class="flex flex-wrap items-end justify-between gap-3 border-b border-bosque-200 pb-3">
+      <div>
+        <h2 id="titulo-alertas" class="seccion-titulo">Alertas abiertas</h2>
+        <p class="mt-1 max-w-2xl text-sm text-bosque-600">
+          Ordenadas por gravedad. Se generan con IA simulada sobre datos ficticios y no sustituyen la valoración veterinaria.
+        </p>
+      </div>
+      @if (alertas.hasValue()) {
+        <span class="rounded-full bg-bosque-100 px-3 py-1 text-xs font-medium text-bosque-700">
+          {{ alertasAbiertas().length }} en seguimiento
+        </span>
+      }
+    </div>
+
+    @if (alertas.isLoading()) {
+      <div class="space-y-4 py-5" role="status" aria-label="Cargando alertas">
+        @for (hueco of [1, 2, 3]; track hueco) {
+          <app-esqueleto clase="h-28" />
+        }
+      </div>
+    } @else if (alertas.error()) {
+      <div class="mt-5">
+        <app-error-carga [mensaje]="errorAlertas()" (reintentar)="alertas.reload()" />
+      </div>
+    } @else if (alertasAbiertas().length === 0) {
+      <div class="mt-5">
+        <app-estado-vacio
+          icono="comprobado"
+          titulo="Sin alertas abiertas"
+          mensaje="Ningún animal tiene una alerta de salud pendiente. Puedes revisar el censo o las dietas propuestas."
+        >
+          <a routerLink="/animales" class="boton-secundario">Ver todos los animales</a>
+        </app-estado-vacio>
+      </div>
+    } @else {
+      <ul class="divide-y divide-bosque-200">
+        @for (alerta of alertasAbiertas(); track alerta.id) {
+          <li class="relative py-5 pl-5">
+            <span
+              class="absolute bottom-5 left-0 top-5 w-1 rounded-full"
+              [class]="barra(alerta.gravedad)"
+              aria-hidden="true"
+            ></span>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <app-estado-etiqueta tipo="gravedad" [valor]="alerta.gravedad" />
+              <app-estado-etiqueta tipo="alerta" [valor]="alerta.estado" />
+              <span class="text-xs text-bosque-600">{{ alerta.fecha | date: 'd MMM yyyy' }}</span>
+            </div>
+
+            <div class="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h3 class="font-display text-xl font-semibold text-bosque-950">{{ alerta.animalNombre }}</h3>
+              <span class="rounded bg-bosque-100 px-2 py-0.5 text-xs font-medium text-bosque-700">
+                {{ alerta.especieNombreComun }}
+              </span>
+              <span class="text-xs text-bosque-600">{{ alerta.tipo }}</span>
+            </div>
+
+            <p class="mt-1 max-w-2xl text-sm leading-relaxed text-bosque-700">{{ alerta.mensaje }}</p>
+
+            <a
+              [routerLink]="['/animales', alerta.animalId]"
+              class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-bosque-700 underline-offset-4 hover:text-bosque-900 hover:underline"
+            >
+              Abrir ficha
+              <app-icono nombre="flecha-derecha" clase="size-4" />
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <div class="mt-10 grid gap-4 sm:grid-cols-2">
+    <a
+      routerLink="/animales"
+      [queryParams]="{ estado: 'EnTratamiento' }"
+      class="group flex items-center justify-between gap-4 rounded-lg border border-bosque-200 bg-arena-50 p-5 transition-colors hover:border-bosque-400"
+    >
+      <span>
+        <span class="block font-display text-lg font-semibold text-bosque-950">Animales en tratamiento</span>
+        <span class="mt-1 block text-sm text-bosque-600">Revisa quién tiene un seguimiento activo.</span>
+      </span>
+      <app-icono nombre="flecha-derecha" clase="size-5 text-bosque-600 transition-transform group-hover:translate-x-0.5" />
+    </a>
+
+    <a
+      routerLink="/alimentacion"
+      [queryParams]="{ estado: 'Propuesta' }"
+      class="group flex items-center justify-between gap-4 rounded-lg border border-bosque-200 bg-arena-50 p-5 transition-colors hover:border-bosque-400"
+    >
+      <span>
+        <span class="block font-display text-lg font-semibold text-bosque-950">Dietas por validar</span>
+        <span class="mt-1 block text-sm text-bosque-600">Ninguna dieta propuesta se aplica sin revisión.</span>
+      </span>
+      <app-icono nombre="flecha-derecha" clase="size-5 text-bosque-600 transition-transform group-hover:translate-x-0.5" />
+    </a>
+  </div>
+</div>

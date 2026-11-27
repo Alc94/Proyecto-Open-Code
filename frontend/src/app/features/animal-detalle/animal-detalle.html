@@ -1,0 +1,393 @@
+<div class="pagina">
+  <a
+    routerLink="/animales"
+    class="inline-flex items-center gap-1.5 text-sm font-medium text-bosque-600 transition-colors hover:text-bosque-900"
+  >
+    <app-icono nombre="flecha-izquierda" clase="size-4" />
+    Volver a animales
+  </a>
+
+  @if (detalle.isLoading()) {
+    <div class="mt-5 space-y-5" role="status" aria-label="Cargando ficha del animal">
+      <app-esqueleto clase="h-8 w-48" />
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div class="space-y-4">
+          <app-esqueleto clase="h-12 w-2/3" />
+          <app-esqueleto clase="h-5 w-1/2" />
+          <app-esqueleto clase="h-24" />
+        </div>
+        <app-esqueleto clase="h-64" />
+      </div>
+      <div class="grid gap-4 sm:grid-cols-3">
+        @for (hueco of [1, 2, 3]; track hueco) {
+          <app-esqueleto clase="h-32" />
+        }
+      </div>
+    </div>
+  } @else if (noEncontrado() || !animalId()) {
+    <div class="mt-6">
+      <app-estado-vacio
+        titulo="No encontramos ese animal"
+        mensaje="Puede que el enlace esté mal o que la ficha ya no exista. Vuelve al listado para elegir otro animal."
+      >
+        <a routerLink="/animales" class="boton-primario">Ir al listado de animales</a>
+      </app-estado-vacio>
+    </div>
+  } @else if (detalle.error()) {
+    <div class="mt-6">
+      <app-error-carga [mensaje]="errorDetalle()" (reintentar)="detalle.reload()" />
+    </div>
+  } @else if (detalle.value(); as animal) {
+    <header class="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-stretch">
+      <div class="flex flex-col justify-center">
+        <div class="flex flex-wrap items-center gap-2">
+          <app-estado-etiqueta [valor]="animal.estado" />
+          @if (animal.tieneAlertaGrave) {
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-arcilla-100 px-2.5 py-0.5 text-xs font-medium text-arcilla-800 ring-1 ring-inset ring-arcilla-200">
+              <app-icono nombre="alerta" clase="size-3.5" />
+              Alerta grave
+            </span>
+          }
+          @if (animal.tratamientosActivos > 0) {
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-ambar-100 px-2.5 py-0.5 text-xs font-medium text-ambar-800 ring-1 ring-inset ring-ambar-200">
+              <app-icono nombre="tratamiento" clase="size-3.5" />
+              {{ animal.tratamientosActivos }}
+              {{ animal.tratamientosActivos === 1 ? 'tratamiento activo' : 'tratamientos activos' }}
+            </span>
+          }
+        </div>
+
+        <h1 class="mt-3 font-display text-4xl font-semibold tracking-tight text-bosque-950 sm:text-5xl">
+          {{ animal.nombre }}
+        </h1>
+        <p class="mt-1 font-display text-lg italic text-bosque-600">{{ animal.especie.nombreCientifico }}</p>
+        <p class="mt-1 text-sm text-bosque-600">{{ animal.especie.nombreComun }}</p>
+
+        <dl class="mt-6 grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-3">
+          <div>
+            <dt class="dato-etiqueta">Sexo</dt>
+            <dd class="dato-valor">{{ etiqueta(animal.sexo) }}</dd>
+          </div>
+          <div>
+            <dt class="dato-etiqueta">Edad</dt>
+            <dd class="dato-valor">{{ animal.edadAnios }} años</dd>
+          </div>
+          <div>
+            <dt class="dato-etiqueta">Peso actual</dt>
+            <dd class="dato-valor tabular-nums">{{ animal.pesoKg | number: '1.0-2' }} kg</dd>
+          </div>
+          <div>
+            <dt class="dato-etiqueta">Recinto</dt>
+            <dd class="dato-valor">{{ animal.recinto }}</dd>
+          </div>
+          <div>
+            <dt class="dato-etiqueta">Nacimiento</dt>
+            <dd class="dato-valor">{{ animal.fechaNacimiento | date: 'd MMM yyyy' }}</dd>
+          </div>
+          <div>
+            <dt class="dato-etiqueta">Alertas abiertas</dt>
+            <dd class="dato-valor">{{ animal.alertasAbiertas }}</dd>
+          </div>
+        </dl>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          @if (animal.dietaValidadaId) {
+            <a
+              [routerLink]="['/alimentacion']"
+              [queryParams]="{ dieta: animal.dietaValidadaId }"
+              class="boton-primario"
+            >
+              <app-icono nombre="alimentacion" clase="size-4" />
+              Ver dieta validada
+            </a>
+          }
+          <a routerLink="/animales" class="boton-secundario">Volver al listado</a>
+        </div>
+      </div>
+
+      <div class="relative min-h-56 overflow-hidden rounded-xl border border-bosque-800 bg-bosque-900">
+        @if (animal.fotoUrl) {
+          <img
+            [src]="animal.fotoUrl"
+            [alt]="'Fotografía de ' + animal.nombre"
+            class="h-full min-h-56 w-full object-cover"
+            loading="lazy"
+          />
+        } @else {
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(224,172,60,0.2),transparent_45%),radial-gradient(circle_at_80%_80%,rgba(116,168,140,0.25),transparent_50%)]"></div>
+          <div class="relative flex h-full min-h-56 flex-col items-center justify-center p-6 text-center">
+            <span class="font-display text-8xl font-semibold leading-none text-ambar-400/90">{{ inicial(animal.nombre) }}</span>
+            <span class="mt-3 text-xs text-bosque-300">Sin fotografía</span>
+            <span class="mt-1 font-display text-sm italic text-bosque-400">{{ animal.especie.nombreComun }}</span>
+          </div>
+        }
+      </div>
+    </header>
+
+    <div class="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1.7fr)_minmax(280px,1fr)]">
+      <div class="order-2 space-y-10 lg:order-1">
+        <section aria-labelledby="titulo-alertas-animal">
+          <div class="flex flex-wrap items-end justify-between gap-3 border-b border-bosque-200 pb-3">
+            <h2 id="titulo-alertas-animal" class="seccion-titulo">Alertas de salud</h2>
+            @if (historial.hasValue()) {
+              <span class="rounded-full bg-bosque-100 px-3 py-1 text-xs font-medium text-bosque-700">
+                {{ alertasAbiertas() }} {{ alertasAbiertas() === 1 ? 'abierta' : 'abiertas' }} de {{ alertas().length }}
+              </span>
+            }
+          </div>
+
+          @if (historial.isLoading()) {
+            <div class="mt-4 space-y-3" role="status" aria-label="Cargando alertas">
+              @for (hueco of [1, 2]; track hueco) {
+                <app-esqueleto clase="h-24" />
+              }
+            </div>
+          } @else if (historial.error()) {
+            <div class="mt-4">
+              <app-error-carga [mensaje]="errorHistorial()" (reintentar)="historial.reload()" />
+            </div>
+          } @else if (alertas().length === 0) {
+            <p class="mt-4 rounded-lg border border-bosque-200 bg-arena-50 px-4 py-5 text-sm text-bosque-600">
+              Este animal no tiene alertas de salud registradas.
+            </p>
+          } @else {
+            <ul class="mt-4 divide-y divide-bosque-200">
+              @for (alerta of alertas(); track alerta.id) {
+                <li class="relative py-4 pl-5">
+                  <span
+                    class="absolute bottom-4 left-0 top-4 w-1 rounded-full"
+                    [class]="alerta.gravedad === 'Critica' ? 'bg-red-700' : alerta.gravedad === 'Alta' ? 'bg-arcilla-500' : alerta.gravedad === 'Media' ? 'bg-ambar-500' : 'bg-bosque-400'"
+                    aria-hidden="true"
+                  ></span>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <app-estado-etiqueta tipo="gravedad" [valor]="alerta.gravedad" />
+                    <app-estado-etiqueta tipo="alerta" [valor]="alerta.estado" />
+                    <span class="text-xs text-bosque-600">{{ alerta.fecha | date: 'd MMM yyyy' }}</span>
+                    <span class="text-xs text-bosque-600">{{ alerta.tipo }}</span>
+                  </div>
+                  <p class="mt-2 text-sm leading-relaxed text-bosque-700">{{ alerta.mensaje }}</p>
+                  <p class="mt-1 text-xs text-bosque-600">Origen: {{ alerta.origen }}</p>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+
+        <section aria-labelledby="titulo-historial-animal">
+          <div class="flex flex-wrap items-end justify-between gap-3 border-b border-bosque-200 pb-3">
+            <h2 id="titulo-historial-animal" class="seccion-titulo">Historial clínico</h2>
+            @if (historial.hasValue()) {
+              <span class="text-sm text-bosque-600">
+                {{ consultas().length }} {{ consultas().length === 1 ? 'consulta' : 'consultas' }}
+              </span>
+            }
+          </div>
+
+          @if (historial.isLoading()) {
+            <div class="mt-4 space-y-3" role="status" aria-label="Cargando historial">
+              @for (hueco of [1, 2, 3]; track hueco) {
+                <app-esqueleto clase="h-28" />
+              }
+            </div>
+          } @else if (historial.error()) {
+            <div class="mt-4">
+              <app-error-carga [mensaje]="errorHistorial()" (reintentar)="historial.reload()" />
+            </div>
+          } @else if (consultas().length === 0) {
+            <p class="mt-4 rounded-lg border border-bosque-200 bg-arena-50 px-4 py-5 text-sm text-bosque-600">
+              Todavía no hay consultas veterinarias registradas.
+            </p>
+          } @else {
+            <ol class="mt-5 space-y-6 border-l border-bosque-200 pl-5">
+              @for (consulta of consultas(); track consulta.id) {
+                <li class="relative">
+                  <span class="absolute -left-[25px] top-1.5 size-2.5 rounded-full bg-bosque-500 ring-4 ring-bruma" aria-hidden="true"></span>
+                  <div class="flex flex-wrap items-baseline justify-between gap-2">
+                    <h3 class="font-medium text-bosque-950">{{ consulta.motivo }}</h3>
+                    <time class="text-xs text-bosque-600" [attr.datetime]="consulta.fecha">
+                      {{ consulta.fecha | date: 'd MMM yyyy' }}
+                    </time>
+                  </div>
+                  <p class="text-sm text-bosque-600">{{ consulta.veterinario }}</p>
+                  <p class="mt-2 text-sm leading-relaxed text-bosque-700">{{ consulta.diagnostico }}</p>
+
+                  <div class="mt-2 flex flex-wrap gap-2 text-xs">
+                    @if (consulta.pesoKg !== null) {
+                      <span class="rounded bg-bosque-100 px-2 py-0.5 tabular-nums text-bosque-700">
+                        Peso {{ consulta.pesoKg | number: '1.0-2' }} kg
+                      </span>
+                    }
+                    @if (consulta.temperatura !== null) {
+                      <span class="rounded bg-bosque-100 px-2 py-0.5 tabular-nums text-bosque-700">
+                        Temperatura {{ consulta.temperatura | number: '1.1-1' }} °C
+                      </span>
+                    }
+                  </div>
+
+                  @if (consulta.tratamientos.length > 0) {
+                    <ul class="mt-3 space-y-2">
+                      @for (tratamiento of consulta.tratamientos; track tratamiento.id) {
+                        <li class="rounded-md border border-bosque-200 bg-arena-50 px-3 py-2 text-sm">
+                          <span class="font-medium text-bosque-900">{{ tratamiento.medicamento }}</span>
+                          <span class="text-bosque-600">, {{ tratamiento.dosis }}</span>
+                          <span class="mt-1 flex flex-wrap items-center gap-1.5 text-xs text-bosque-600">
+                            <span>Desde {{ tratamiento.fechaInicio | date: 'd MMM yyyy' }}</span>
+                            @if (tratamiento.fechaFin) {
+                              <span>hasta {{ tratamiento.fechaFin | date: 'd MMM yyyy' }}</span>
+                            } @else {
+                              <span class="rounded bg-ambar-100 px-1.5 py-0.5 text-[10px] font-medium text-ambar-800">
+                                En curso
+                              </span>
+                            }
+                          </span>
+                          @if (tratamiento.notas) {
+                            <span class="mt-1 block text-xs leading-relaxed text-bosque-600">{{ tratamiento.notas }}</span>
+                          }
+                        </li>
+                      }
+                    </ul>
+                  }
+                </li>
+              }
+            </ol>
+          }
+        </section>
+
+        <section aria-labelledby="titulo-alimentacion-animal">
+          <div class="flex flex-wrap items-end justify-between gap-3 border-b border-bosque-200 pb-3">
+            <h2 id="titulo-alimentacion-animal" class="seccion-titulo">Alimentación registrada</h2>
+            @if (historial.hasValue()) {
+              <span class="text-sm text-bosque-600">{{ alimentacion().length }} registros</span>
+            }
+          </div>
+
+          @if (historial.isLoading()) {
+            <div class="mt-4 space-y-2" role="status" aria-label="Cargando alimentación">
+              @for (hueco of [1, 2, 3]; track hueco) {
+                <app-esqueleto clase="h-10" />
+              }
+            </div>
+          } @else if (historial.error()) {
+            <div class="mt-4">
+              <app-error-carga [mensaje]="errorHistorial()" (reintentar)="historial.reload()" />
+            </div>
+          } @else if (alimentacion().length === 0) {
+            <p class="mt-4 rounded-lg border border-bosque-200 bg-arena-50 px-4 py-5 text-sm text-bosque-600">
+              No hay comidas registradas para este animal.
+            </p>
+          } @else {
+            <div class="mt-4 overflow-hidden rounded-lg border border-bosque-200">
+              <table class="w-full border-collapse text-left text-sm">
+                <caption class="sr-only">Registros de alimentación de {{ animal.nombre }}</caption>
+                <thead class="bg-bosque-900 text-bosque-100">
+                  <tr>
+                    <th scope="col" class="px-3 py-2.5 font-medium">Fecha</th>
+                    <th scope="col" class="px-3 py-2.5 font-medium">Alimento</th>
+                    <th scope="col" class="px-3 py-2.5 font-medium">Cantidad</th>
+                    <th scope="col" class="px-3 py-2.5 font-medium">Consumido</th>
+                    <th scope="col" class="hidden px-3 py-2.5 font-medium sm:table-cell">kcal</th>
+                    <th scope="col" class="hidden px-3 py-2.5 font-medium sm:table-cell">Dieta</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-bosque-200 bg-arena-50">
+                  @for (registro of alimentacion(); track registro.id) {
+                    <tr>
+                      <td class="whitespace-nowrap px-3 py-2.5 text-bosque-700">{{ registro.fecha | date: 'd MMM yyyy' }}</td>
+                      <td class="px-3 py-2.5 text-bosque-700">{{ registro.alimentoNombre }}</td>
+                      <td class="whitespace-nowrap px-3 py-2.5 tabular-nums text-bosque-700">{{ registro.cantidadKg | number: '1.0-2' }} kg</td>
+                      <td class="whitespace-nowrap px-3 py-2.5 tabular-nums text-bosque-700">{{ registro.consumido | number: '1.0-0' }} %</td>
+                      <td class="hidden whitespace-nowrap px-3 py-2.5 tabular-nums text-bosque-700 sm:table-cell">{{ registro.kcalAportadas | number: '1.0-0' }}</td>
+                      <td class="hidden whitespace-nowrap px-3 py-2.5 sm:table-cell">
+                        @if (registro.coincideConDietaValidada) {
+                          <span class="inline-flex items-center gap-1 text-xs font-medium text-bosque-700">
+                            <app-icono nombre="comprobado" clase="size-3.5" />
+                            Sí
+                          </span>
+                        } @else {
+                          <span class="text-xs font-medium text-ambar-700">No</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </section>
+      </div>
+
+      <aside class="order-1 space-y-6 lg:order-2">
+        <section class="rounded-lg border border-bosque-200 bg-arena-50 p-5" aria-labelledby="titulo-tratamientos-animal">
+          <div class="flex items-center justify-between gap-3">
+            <h2 id="titulo-tratamientos-animal" class="font-display text-xl font-semibold text-bosque-950">
+              Tratamientos activos
+            </h2>
+            @if (tratamientos.hasValue()) {
+              <span class="rounded-full bg-bosque-100 px-2.5 py-0.5 text-xs font-medium text-bosque-700">
+                {{ tratamientosActivos().length }}
+              </span>
+            }
+          </div>
+
+          @if (tratamientos.isLoading()) {
+            <div class="mt-4 space-y-2" role="status" aria-label="Cargando tratamientos">
+              <app-esqueleto clase="h-20" />
+              <app-esqueleto clase="h-20" />
+            </div>
+          } @else if (tratamientos.error()) {
+            <div class="mt-4">
+              <app-error-carga [mensaje]="errorTratamientos()" (reintentar)="tratamientos.reload()" />
+            </div>
+          } @else if (tratamientosActivos().length === 0) {
+            <p class="mt-4 text-sm leading-relaxed text-bosque-600">
+              Sin tratamientos activos. Los tratamientos cerrados siguen disponibles en el historial clínico.
+            </p>
+          } @else {
+            <ul class="mt-4 space-y-3">
+              @for (tratamiento of tratamientosActivos(); track tratamiento.id) {
+                <li class="rounded-md border border-bosque-200 bg-white px-3 py-3">
+                  <div class="flex items-start justify-between gap-2">
+                    <p class="font-medium text-bosque-900">{{ tratamiento.medicamento }}</p>
+                    <span class="rounded-full bg-ambar-100 px-2 py-0.5 text-[11px] font-medium text-ambar-800">Activo</span>
+                  </div>
+                  <p class="mt-0.5 text-sm text-bosque-600">{{ tratamiento.dosis }}</p>
+                  <p class="mt-1 text-xs text-bosque-600">Desde {{ tratamiento.fechaInicio | date: 'd MMM yyyy' }}</p>
+                  @if (tratamiento.notas) {
+                    <p class="mt-2 text-xs leading-relaxed text-bosque-600">{{ tratamiento.notas }}</p>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        </section>
+
+        <section class="rounded-lg border border-bosque-200 bg-arena-50 p-5" aria-labelledby="titulo-especie-animal">
+          <h2 id="titulo-especie-animal" class="font-display text-xl font-semibold text-bosque-950">Especie</h2>
+          <p class="mt-3 font-display text-xl text-bosque-900">{{ animal.especie.nombreComun }}</p>
+          <p class="font-display text-sm italic text-bosque-600">{{ animal.especie.nombreCientifico }}</p>
+
+          <dl class="mt-4 space-y-3">
+            <div>
+              <dt class="dato-etiqueta">Grupo</dt>
+              <dd class="dato-valor">{{ etiqueta(animal.especie.grupo) }}</dd>
+            </div>
+            <div>
+              <dt class="dato-etiqueta">Tipo de dieta</dt>
+              <dd class="dato-valor">{{ etiqueta(animal.especie.tipoDieta) }}</dd>
+            </div>
+          </dl>
+
+          @if (animal.ultimaConsulta) {
+            <div class="mt-4 border-t border-bosque-200 pt-4">
+              <p class="dato-etiqueta">Última consulta</p>
+              <p class="mt-1 text-sm font-medium text-bosque-900">{{ animal.ultimaConsulta.motivo }}</p>
+              <p class="text-xs text-bosque-600">
+                {{ animal.ultimaConsulta.fecha | date: 'd MMM yyyy' }}, {{ animal.ultimaConsulta.veterinario }}
+              </p>
+            </div>
+          }
+        </section>
+      </aside>
+    </div>
+  }
+</div>

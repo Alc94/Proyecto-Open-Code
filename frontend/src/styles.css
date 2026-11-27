@@ -1,0 +1,130 @@
+@import '@fontsource-variable/fraunces';
+@import '@fontsource-variable/public-sans';
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Public Sans Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Fraunces Variable', ui-serif, Georgia, serif;
+
+  --color-bruma: #eef1e8;
+  --color-tinta: #17231d;
+
+  --color-bosque-50: #f2f7f4;
+  --color-bosque-100: #e3eee7;
+  --color-bosque-200: #c9ded2;
+  --color-bosque-300: #a3c6b1;
+  --color-bosque-400: #74a88c;
+  --color-bosque-500: #4a8a6b;
+  --color-bosque-600: #347156;
+  --color-bosque-700: #285a43;
+  --color-bosque-800: #1d4433;
+  --color-bosque-900: #153226;
+  --color-bosque-950: #0e2119;
+
+  --color-arena-50: #fbf9f2;
+  --color-arena-100: #f4efe2;
+  --color-arena-200: #e7dfc9;
+  --color-arena-300: #d6c9a9;
+
+  --color-ambar-100: #faedcb;
+  --color-ambar-200: #f3dca1;
+  --color-ambar-400: #e0ac3c;
+  --color-ambar-500: #d19422;
+  --color-ambar-600: #b27a14;
+  --color-ambar-800: #7a5310;
+  --color-ambar-900: #5e3f0d;
+
+  --color-arcilla-50: #fbf0ec;
+  --color-arcilla-100: #f6ded6;
+  --color-arcilla-200: #ebc1b3;
+  --color-arcilla-500: #c2674d;
+  --color-arcilla-600: #ad513a;
+  --color-arcilla-700: #8e3f2d;
+  --color-arcilla-800: #733425;
+  --color-arcilla-900: #5b2a1f;
+}
+
+@layer base {
+  html {
+    background-color: var(--color-bruma);
+    color: var(--color-tinta);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-ambar-200);
+    color: var(--color-bosque-950);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-bosque-600);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .titulo-pagina {
+    @apply font-display text-3xl font-semibold tracking-tight text-bosque-950 sm:text-4xl;
+  }
+
+  .subtitulo-pagina {
+    @apply mt-2 max-w-2xl text-sm leading-relaxed text-bosque-700 sm:text-base;
+  }
+
+  .boton-primario {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-bosque-800 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-bosque-700 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .boton-secundario {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-bosque-300 bg-arena-50 px-3.5 py-2 text-sm font-medium text-bosque-800 transition-colors hover:border-bosque-400 hover:bg-bosque-50 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .campo {
+    @apply w-full rounded-md border border-bosque-300 bg-white px-3.5 py-2.5 text-sm text-tinta placeholder:text-bosque-400 focus:border-bosque-500 focus:outline-none focus:ring-2 focus:ring-bosque-500/20;
+  }
+
+  .seccion-titulo {
+    @apply font-display text-2xl font-semibold tracking-tight text-bosque-950;
+  }
+
+  .dato-etiqueta {
+    @apply text-xs font-medium text-bosque-500;
+  }
+
+  .dato-valor {
+    @apply mt-0.5 text-sm font-medium text-tinta;
+  }
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.pagina {
+  animation: aparecer 380ms cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}

@@ -1,0 +1,107 @@
+<article
+  [id]="'dieta-' + dieta().id"
+  class="scroll-mt-24 overflow-hidden rounded-lg border border-bosque-200 bg-arena-50"
+>
+  <div class="p-5">
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <div>
+        <p class="text-xs font-medium text-bosque-600">{{ dieta().especieNombreComun }}</p>
+        <h3 class="mt-0.5 font-display text-2xl font-semibold text-bosque-950">{{ dieta().nombre }}</h3>
+      </div>
+      <app-estado-etiqueta tipo="dieta" [valor]="dieta().estado" />
+    </div>
+
+    <dl class="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div>
+        <dt class="dato-etiqueta">Líneas</dt>
+        <dd class="dato-valor">{{ dieta().numeroLineas }}</dd>
+      </div>
+      <div>
+        <dt class="dato-etiqueta">kcal al día</dt>
+        <dd class="dato-valor tabular-nums">{{ dieta().kcalTotalesDia | number: '1.0-0' }}</dd>
+      </div>
+      <div>
+        <dt class="dato-etiqueta">Origen</dt>
+        <dd class="dato-valor">{{ dieta().origen }}</dd>
+      </div>
+      <div>
+        <dt class="dato-etiqueta">Validada por</dt>
+        <dd class="dato-valor">{{ dieta().validadaPor ?? 'Pendiente' }}</dd>
+      </div>
+    </dl>
+
+    @if (!dieta().puedeAplicarse) {
+      <p class="mt-4 flex items-start gap-2 rounded-md border border-ambar-200 bg-ambar-100/60 px-3 py-2 text-xs leading-relaxed text-ambar-900">
+        <app-icono nombre="alerta" clase="mt-0.5 size-4" />
+        <span>No puede aplicarse todavía: la dieta debe estar validada por un veterinario.</span>
+      </p>
+    }
+
+    <button
+      type="button"
+      class="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-bosque-700 underline-offset-4 hover:text-bosque-900 hover:underline"
+      [attr.aria-expanded]="expandida()"
+      [attr.aria-controls]="'lineas-dieta-' + dieta().id"
+      (click)="alternar()"
+    >
+      {{ expandida() ? 'Ocultar líneas' : 'Ver líneas (' + dieta().numeroLineas + ')' }}
+      <app-icono [nombre]="expandida() ? 'menos' : 'mas'" clase="size-4" />
+    </button>
+  </div>
+
+  @if (expandida()) {
+    <div [id]="'lineas-dieta-' + dieta().id" class="border-t border-bosque-200 bg-white/60 p-5">
+      @if (detalle.isLoading()) {
+        <div class="space-y-2" role="status" aria-label="Cargando líneas de la dieta">
+          @for (hueco of [1, 2, 3]; track hueco) {
+            <app-esqueleto clase="h-10" />
+          }
+        </div>
+      } @else if (detalle.error()) {
+        <app-error-carga [mensaje]="errorDetalle()" (reintentar)="detalle.reload()" />
+      } @else if (detalle.value(); as completa) {
+        @if (completa.lineas.length === 0) {
+          <p class="text-sm text-bosque-600">Esta dieta no tiene líneas de alimento registradas.</p>
+        } @else {
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[520px] border-collapse text-left text-sm">
+              <caption class="sr-only">Líneas de la dieta {{ dieta().nombre }}</caption>
+              <thead>
+                <tr class="border-b border-bosque-200 text-xs text-bosque-600">
+                  <th scope="col" class="pb-2 pr-3 font-medium">Alimento</th>
+                  <th scope="col" class="pb-2 pr-3 font-medium">Categoría</th>
+                  <th scope="col" class="pb-2 pr-3 font-medium">Cantidad</th>
+                  <th scope="col" class="pb-2 pr-3 font-medium">Frecuencia</th>
+                  <th scope="col" class="pb-2 text-right font-medium">kcal/día</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-bosque-100">
+                @for (linea of completa.lineas; track linea.id) {
+                  <tr>
+                    <td class="py-2 pr-3 font-medium text-bosque-900">{{ linea.alimentoNombre }}</td>
+                    <td class="py-2 pr-3 text-bosque-600">{{ linea.categoria }}</td>
+                    <td class="whitespace-nowrap py-2 pr-3 tabular-nums text-bosque-700">
+                      {{ linea.cantidadKgDia | number: '1.0-2' }} kg
+                    </td>
+                    <td class="py-2 pr-3 text-bosque-600">{{ linea.frecuencia }}</td>
+                    <td class="whitespace-nowrap py-2 text-right tabular-nums text-bosque-700">
+                      {{ linea.kcalDia | number: '1.0-0' }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr class="border-t border-bosque-200">
+                  <td colspan="4" class="pt-3 text-sm font-semibold text-bosque-900">Total diario</td>
+                  <td class="pt-3 text-right text-sm font-semibold tabular-nums text-bosque-900">
+                    {{ completa.kcalTotalesDia | number: '1.0-0' }} kcal
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        }
+      }
+    </div>
+  }
+</article>
