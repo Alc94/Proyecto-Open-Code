@@ -16,6 +16,10 @@ export class ZooApi {
     return this.conUrl('/api/alertas', filtros);
   }
 
+  especies(filtros: { grupo?: string; tipoDieta?: string; texto?: string } = {}): string {
+    return this.conUrl('/api/especies', filtros);
+  }
+
   animales(
     filtros: {
       estado?: string;

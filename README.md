@@ -15,7 +15,7 @@ Plataforma web de gestion de zoologicos (animales, veterinaria y alimentacion) c
 
 ## Requisitos
 
-Git y Git Bash, Docker Desktop, Node.js 22 o superior, SDK de .NET 10 y OpenCode v2 en su version de terminal (`opencode --version` debe responder).
+Git y Git Bash, Docker Desktop, Node.js 24 o superior (Angular 21), SDK de .NET 10 y OpenCode v2 en su version de terminal (`opencode --version` debe responder).
 
 ## Puesta en marcha
 
@@ -24,6 +24,23 @@ Git y Git Bash, Docker Desktop, Node.js 22 o superior, SDK de .NET 10 y OpenCode
 3. Arranca OpenCode con las variables cargadas, desde Git Bash: `bash scripts/opencode.sh`.
 4. Conecta los providers dentro de OpenCode con `/connect` y elige modelos con `/models`.
 5. Comprueba MCPs y plugins: `opencode mcp list` y `opencode plugin list`.
+
+## Comprobar la web en local
+
+- **Desarrollo:** con PostgreSQL y la API en marcha (`bash scripts/opencode.sh` carga
+  `ConnectionStrings__Default`), ejecuta `npm install && npm start` en `frontend/` y
+  abre `http://localhost:4200`. El proxy de Angular envía `/api` al puerto 5142.
+- **Producción local:** `npm run build` en `frontend/`, publica la API con
+  `dotnet publish backend/src/ZooLogic.Api/ZooLogic.Api.csproj -c Release -o publicacion-local -p:UseAppHost=false`,
+  copia `frontend/dist/frontend/browser` a `publicacion-local/wwwroot` y arranca con
+  `PORT=5199 dotnet ZooLogic.Api.dll` desde la carpeta publicada. Abre
+  `http://localhost:5199` y recarga `/animales/1` para comprobar el fallback del SPA.
+  Los pasos detallados están en `frontend/README.md`.
+- **Imagen de Render:** `docker build -t zoo-logic-ia .` y
+  `docker run --rm -p 8080:8080 -e DATABASE_URL="postgresql://..." zoo-logic-ia`.
+
+La API sirve la web compilada desde `wwwroot` (una sola URL) y responde `/health`.
+La ruta `''` muestra la portada pública; `/panel` es el acceso del personal.
 
 ## Seguridad
 

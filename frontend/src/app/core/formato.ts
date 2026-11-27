@@ -57,8 +57,21 @@ const VARIANTES: Record<TipoEtiqueta, Record<string, string>> = {
   },
 };
 
+const CONSERVACION: Record<string, string> = {
+  'En peligro crítico': 'bg-red-100 text-red-800 ring-red-200',
+  'En peligro': 'bg-arcilla-100 text-arcilla-800 ring-arcilla-200',
+  Vulnerable: 'bg-ambar-100 text-ambar-800 ring-ambar-200',
+  'Casi amenazado': 'bg-ambar-100 text-ambar-800 ring-ambar-200',
+  'Preocupación menor': 'bg-bosque-100 text-bosque-800 ring-bosque-200',
+};
+
 export function etiqueta(valor: string): string {
   return ETIQUETAS[valor] ?? valor;
+}
+
+export function clasesConservacion(valor: string): string {
+  const variante = CONSERVACION[valor] ?? 'bg-stone-100 text-stone-700 ring-stone-200';
+  return `${BASE_ETIQUETA} ${variante}`;
 }
 
 export function clasesEtiqueta(tipo: TipoEtiqueta, valor: string): string {

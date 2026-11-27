@@ -1,0 +1,349 @@
+<a
+  href="#contenido"
+  class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-bosque-900 focus:shadow-lg"
+>
+  Saltar al contenido
+</a>
+
+<header class="sticky top-0 z-30 border-b border-bosque-800 bg-bosque-950 text-white">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-10">
+    <a routerLink="/" class="flex items-center gap-2.5 sm:gap-3" aria-label="Zoo-Logic, inicio">
+      <span class="grid size-9 place-items-center rounded-full border border-bosque-600/70 bg-bosque-900 text-ambar-400 sm:size-10">
+        <app-icono nombre="animales" clase="size-5" />
+      </span>
+      <span class="font-display text-xl font-semibold tracking-tight sm:text-2xl">Zoo-Logic</span>
+    </a>
+
+    <nav class="hidden items-center gap-6 text-sm text-bosque-200 md:flex" aria-label="Secciones del zoológico">
+      <a href="#labor" class="transition-colors hover:text-white">Nuestra labor</a>
+      <a href="#especies" class="transition-colors hover:text-white">Especies</a>
+      <a href="#visita" class="transition-colors hover:text-white">Visita</a>
+    </nav>
+
+    <a
+      routerLink="/panel"
+      class="inline-flex items-center gap-1.5 rounded-md border border-bosque-700 px-3 py-1.5 text-xs font-medium text-bosque-200 transition-colors hover:border-bosque-500 hover:text-white"
+    >
+      <app-icono nombre="escudo" clase="size-3.5" />
+      <span class="hidden sm:inline">Zona del personal</span>
+      <span class="sm:hidden">Personal</span>
+    </a>
+  </div>
+</header>
+
+<main id="contenido">
+  <section class="relative overflow-hidden bg-bosque-950 text-white">
+    <div
+      class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(224,172,60,0.18),transparent_45%),radial-gradient(circle_at_85%_85%,rgba(116,168,140,0.22),transparent_50%)]"
+      aria-hidden="true"
+    ></div>
+
+    <div class="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24 lg:px-10">
+      <p class="text-xs font-medium uppercase tracking-[0.22em] text-ambar-400">
+        Conservación · Educación · Bienestar animal
+      </p>
+      <h1 class="mt-4 max-w-3xl font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
+        Un lugar donde cada especie cuenta.
+      </h1>
+      <p class="mt-5 max-w-2xl text-base leading-relaxed text-bosque-100 sm:text-lg">
+        Bienvenido a Zoo-Logic, un zoológico dedicado a cuidar, estudiar y dar a conocer la vida
+        animal. Cada hábitat, cada dieta y cada revisión veterinaria forman parte de un mismo
+        compromiso: el bienestar de los animales y la conservación de las especies amenazadas.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a
+          href="#especies"
+          class="inline-flex items-center justify-center gap-2 rounded-md bg-ambar-400 px-5 py-3 text-sm font-semibold text-bosque-950 transition-colors hover:bg-ambar-200"
+        >
+          Descubre las especies
+          <app-icono nombre="flecha-derecha" clase="size-4" />
+        </a>
+        <a
+          href="#visita"
+          class="inline-flex items-center justify-center gap-2 rounded-md border border-bosque-600 px-5 py-3 text-sm font-medium text-bosque-100 transition-colors hover:border-bosque-400 hover:bg-bosque-900"
+        >
+          Prepara tu visita
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-bosque-200 bg-arena-50" aria-labelledby="titulo-cifras">
+    <div class="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-10">
+      <h2 id="titulo-cifras" class="sr-only">El zoo en cifras</h2>
+
+      <dl class="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:divide-x sm:divide-bosque-200">
+        <div class="sm:px-6 sm:first:pl-0">
+          <dt class="dato-etiqueta">Animales a nuestro cuidado</dt>
+          <dd class="mt-1 font-display text-4xl font-semibold tabular-nums text-bosque-950">
+            @if (resumen.hasValue()) {
+              {{ resumen.value()!.totalAnimales }}
+            } @else if (resumen.isLoading()) {
+              <app-esqueleto clase="h-9 w-14" />
+            } @else {
+              —
+            }
+          </dd>
+        </div>
+
+        <div class="sm:px-6">
+          <dt class="dato-etiqueta">Especies representadas</dt>
+          <dd class="mt-1 font-display text-4xl font-semibold tabular-nums text-bosque-950">
+            @if (totalEspecies() !== null) {
+              {{ totalEspecies() }}
+            } @else if (especies.isLoading()) {
+              <app-esqueleto clase="h-9 w-14" />
+            } @else {
+              —
+            }
+          </dd>
+        </div>
+
+        <div class="sm:px-6">
+          <dt class="dato-etiqueta">En seguimiento veterinario</dt>
+          <dd class="mt-1 font-display text-4xl font-semibold tabular-nums text-bosque-950">
+            @if (resumen.hasValue()) {
+              {{ resumen.value()!.animalesEnTratamiento }}
+            } @else if (resumen.isLoading()) {
+              <app-esqueleto clase="h-9 w-14" />
+            } @else {
+              —
+            }
+          </dd>
+        </div>
+      </dl>
+
+      @if (resumen.error()) {
+        <p class="mt-5 flex flex-wrap items-center gap-2 text-xs text-bosque-600">
+          {{ errorResumen() }}
+          <button
+            type="button"
+            class="font-semibold text-bosque-800 underline underline-offset-4 hover:text-bosque-950"
+            (click)="reintentarCifras()"
+          >
+            Reintentar
+          </button>
+        </p>
+      }
+    </div>
+  </section>
+
+  <section id="labor" class="scroll-mt-20 bg-bruma" aria-labelledby="titulo-labor">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-10">
+      <div class="max-w-2xl">
+        <p class="text-sm font-medium text-bosque-600">Nuestra labor</p>
+        <h2 id="titulo-labor" class="mt-1 font-display text-3xl font-semibold tracking-tight text-bosque-950 sm:text-4xl">
+          Mucho más que un lugar para visitar
+        </h2>
+        <p class="mt-3 text-base leading-relaxed text-bosque-700">
+          El zoo combina el cuidado diario de los animales con la investigación, la educación
+          ambiental y la conservación. Esto es lo que encontrarás durante tu visita.
+        </p>
+      </div>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-2">
+        <article class="rounded-xl border border-bosque-200 bg-arena-50 p-6">
+          <span class="grid size-11 place-items-center rounded-lg bg-bosque-100 text-bosque-700">
+            <app-icono nombre="recinto" clase="size-5" />
+          </span>
+          <h3 class="mt-4 font-display text-xl font-semibold text-bosque-950">Visitas y recorridos</h3>
+          <p class="mt-2 text-sm leading-relaxed text-bosque-700">
+            Itinerarios por los distintos hábitats para conocer de cerca cómo viven nuestras
+            especies y qué necesita cada una para estar bien.
+          </p>
+        </article>
+
+        <article class="rounded-xl border border-bosque-200 bg-arena-50 p-6">
+          <span class="grid size-11 place-items-center rounded-lg bg-bosque-100 text-bosque-700">
+            <app-icono nombre="corazon" clase="size-5" />
+          </span>
+          <h3 class="mt-4 font-display text-xl font-semibold text-bosque-950">Conservación de especies</h3>
+          <p class="mt-2 text-sm leading-relaxed text-bosque-700">
+            Programas de conservación centrados en especies amenazadas, con seguimiento de
+            poblaciones y colaboración con otros centros.
+          </p>
+        </article>
+
+        <article class="rounded-xl border border-bosque-200 bg-arena-50 p-6">
+          <span class="grid size-11 place-items-center rounded-lg bg-bosque-100 text-bosque-700">
+            <app-icono nombre="escudo" clase="size-5" />
+          </span>
+          <h3 class="mt-4 font-display text-xl font-semibold text-bosque-950">Atención veterinaria propia</h3>
+          <p class="mt-2 text-sm leading-relaxed text-bosque-700">
+            Equipo veterinario y consultas programadas para prevenir, detectar y tratar cualquier
+            problema de salud de los animales del centro.
+          </p>
+        </article>
+
+        <article class="rounded-xl border border-bosque-200 bg-arena-50 p-6">
+          <span class="grid size-11 place-items-center rounded-lg bg-bosque-100 text-bosque-700">
+            <app-icono nombre="alimentacion" clase="size-5" />
+          </span>
+          <h3 class="mt-4 font-display text-xl font-semibold text-bosque-950">Alimentación supervisada</h3>
+          <p class="mt-2 text-sm leading-relaxed text-bosque-700">
+            Planes de alimentación diseñados por especialistas para cada especie y revisados antes
+            de aplicarse, con control de cantidades y nutrientes.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="especies" class="scroll-mt-20 border-y border-bosque-200 bg-arena-50" aria-labelledby="titulo-especies">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-10">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="max-w-2xl">
+          <p class="text-sm font-medium text-bosque-600">El catálogo del zoo</p>
+          <h2 id="titulo-especies" class="mt-1 font-display text-3xl font-semibold tracking-tight text-bosque-950 sm:text-4xl">
+            Las especies que cuidamos
+          </h2>
+          <p class="mt-3 text-base leading-relaxed text-bosque-700">
+            Mamíferos, aves, reptiles, anfibios y peces conviven en hábitats preparados para sus
+            necesidades. Este es el estado de conservación de cada especie según su ficha.
+          </p>
+        </div>
+        @if (totalEspecies() !== null) {
+          <span class="rounded-full bg-bosque-100 px-3 py-1 text-xs font-medium text-bosque-700">
+            {{ totalEspecies() }} {{ totalEspecies() === 1 ? 'especie' : 'especies' }}
+          </span>
+        }
+      </div>
+
+      @if (especies.isLoading()) {
+        <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" role="status" aria-label="Cargando especies">
+          @for (hueco of [1, 2, 3, 4, 5, 6]; track hueco) {
+            <app-esqueleto clase="h-44" />
+          }
+        </div>
+      } @else if (especies.error()) {
+        <div class="mt-8">
+          <app-error-carga [mensaje]="errorEspecies()" (reintentar)="especies.reload()" />
+        </div>
+      } @else if (especies.hasValue() && especies.value()!.length === 0) {
+        <div class="mt-8">
+          <app-estado-vacio
+            icono="animales"
+            titulo="Todavía no hay especies publicadas"
+            mensaje="El catálogo se está preparando. Vuelve a consultarlo en unos días."
+          />
+        </div>
+      } @else if (especies.hasValue()) {
+        <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          @for (especie of especies.value()!; track especie.id) {
+            <li class="flex flex-col rounded-xl border border-bosque-200 bg-white/70 p-5">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="rounded bg-bosque-100 px-2 py-0.5 text-xs font-medium text-bosque-700">
+                  {{ etiqueta(especie.grupo) }}
+                </span>
+                <span [class]="clasesConservacion(especie.estadoConservacion)">
+                  {{ especie.estadoConservacion }}
+                </span>
+              </div>
+
+              <h3 class="mt-3 font-display text-xl font-semibold text-bosque-950">
+                {{ especie.nombreComun }}
+              </h3>
+              <p class="font-display text-sm italic text-bosque-600">{{ especie.nombreCientifico }}</p>
+
+              <dl class="mt-auto grid grid-cols-2 gap-3 border-t border-bosque-200 pt-4 text-sm">
+                <div>
+                  <dt class="dato-etiqueta">Animales</dt>
+                  <dd class="dato-valor">{{ especie.numeroAnimales }}</dd>
+                </div>
+                <div>
+                  <dt class="dato-etiqueta">Dietas</dt>
+                  <dd class="dato-valor">{{ especie.numeroDietas }}</dd>
+                </div>
+              </dl>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </section>
+
+  <section id="visita" class="scroll-mt-20 bg-bruma" aria-labelledby="titulo-visita">
+    <div class="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(260px,1fr)] lg:px-10">
+      <div>
+        <p class="text-sm font-medium text-bosque-600">Planifica tu visita</p>
+        <h2 id="titulo-visita" class="mt-1 font-display text-3xl font-semibold tracking-tight text-bosque-950 sm:text-4xl">
+          Un recorrido para toda la familia
+        </h2>
+        <p class="mt-3 max-w-2xl text-base leading-relaxed text-bosque-700">
+          Recorre los hábitats a tu ritmo y detente en los puntos de interpretación para descubrir
+          cómo trabaja el equipo del zoo. Las visitas guiadas permiten conocer de primera mano la
+          labor de conservación y el cuidado diario de los animales.
+        </p>
+
+        <ul class="mt-6 space-y-3 text-sm text-bosque-800">
+          <li class="flex items-start gap-2.5">
+            <app-icono nombre="comprobado" clase="mt-0.5 size-4 text-bosque-600" />
+            <span>Recorridos señalizados por los distintos hábitats.</span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <app-icono nombre="comprobado" clase="mt-0.5 size-4 text-bosque-600" />
+            <span>Visitas guiadas con explicaciones sobre cada especie.</span>
+          </li>
+          <li class="flex items-start gap-2.5">
+            <app-icono nombre="comprobado" clase="mt-0.5 size-4 text-bosque-600" />
+            <span>Información sobre conservación y bienestar animal.</span>
+          </li>
+        </ul>
+      </div>
+
+      <aside class="rounded-xl border border-bosque-200 bg-arena-50 p-6">
+        <h3 class="font-display text-xl font-semibold text-bosque-950">Antes de venir</h3>
+        <dl class="mt-4 space-y-4 text-sm">
+          <div>
+            <dt class="dato-etiqueta">Horario</dt>
+            <dd class="dato-valor">Consultar en taquilla</dd>
+          </div>
+          <div>
+            <dt class="dato-etiqueta">Visitas guiadas</dt>
+            <dd class="dato-valor">Grupos reducidos, con reserva previa</dd>
+          </div>
+          <div>
+            <dt class="dato-etiqueta">Accesibilidad</dt>
+            <dd class="dato-valor">Recorridos adaptados para sillas de ruedas</dd>
+          </div>
+        </dl>
+        <p class="mt-5 border-t border-bosque-200 pt-4 text-xs leading-relaxed text-bosque-600">
+          Los datos de esta web son ficticios y forman parte de una demostración del sistema de
+          gestión del zoo.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="border-t border-bosque-200 bg-arena-100" aria-labelledby="titulo-personal">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-8 sm:px-6 lg:px-10">
+      <div>
+        <h2 id="titulo-personal" class="font-display text-lg font-semibold text-bosque-950">
+          Zona del personal
+        </h2>
+        <p class="mt-1 text-sm text-bosque-700">
+          Acceso reservado al equipo del zoo: censo de animales, historiales clínicos y dietas.
+        </p>
+      </div>
+      <a routerLink="/panel" class="boton-secundario">
+        <app-icono nombre="escudo" clase="size-4" />
+        Entrar al panel
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="bg-bosque-950 text-bosque-200">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-4 py-8 text-sm sm:px-6 lg:px-10">
+    <div class="flex items-center gap-2.5">
+      <span class="grid size-8 place-items-center rounded-full border border-bosque-700 bg-bosque-900 text-ambar-400">
+        <app-icono nombre="animales" clase="size-4" />
+      </span>
+      <span class="font-display text-lg font-semibold text-white">Zoo-Logic</span>
+    </div>
+    <p class="text-xs leading-relaxed text-bosque-300">
+      Demostración con datos ficticios. No sustituye la información oficial del centro.
+    </p>
+  </div>
+</footer>

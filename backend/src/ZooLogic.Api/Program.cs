@@ -86,6 +86,10 @@ if (app.Environment.IsDevelopment())
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
+// El frontend compilado se sirve desde wwwroot (Docker copia allí dist/frontend/browser).
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.MapGet("/health", async (ZooDbContext db, CancellationToken ct) =>
     {
         bool healthy;
@@ -112,6 +116,24 @@ app.MapAnimales();
 app.MapVeterinaria();
 app.MapAlimentacion();
 app.MapPanel();
+
+// Fallback del SPA: devuelve index.html en las rutas de Angular, pero nunca en /api ni /health.
+app.MapFallback(async (HttpContext contexto) =>
+{
+    if (contexto.Request.Path.StartsWithSegments("/api") ||
+        contexto.Request.Path.StartsWithSegments("/health"))
+    {
+        return Results.NotFound();
+    }
+
+    var raizWeb = app.Environment.WebRootPath
+        ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
+    var index = Path.Combine(raizWeb, "index.html");
+
+    return File.Exists(index)
+        ? Results.File(index, "text/html; charset=utf-8")
+        : Results.NotFound();
+});
 
 app.Run();
 

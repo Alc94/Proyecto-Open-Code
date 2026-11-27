@@ -53,6 +53,12 @@ export interface EspecieResumen {
   tipoDieta: string;
 }
 
+export interface Especie extends EspecieResumen {
+  estadoConservacion: string;
+  numeroAnimales: number;
+  numeroDietas: number;
+}
+
 export interface ConsultaResumen {
   id: number;
   animalId: number;
